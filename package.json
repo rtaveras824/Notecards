@@ -4,7 +4,7 @@
   "description": "Notecard studying application",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1", 
+    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index"
   },
   "repository": {
@@ -21,6 +21,8 @@
   },
   "homepage": "https://github.com/rtaveras824/Notecards#readme",
   "dependencies": {
-    "express": "^4.18.2"
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mongoose": "^6.6.7"
   }
 }
