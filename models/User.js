@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema({
 	username: {
@@ -34,3 +35,17 @@ const userSchema = new mongoose.Schema({
 userSchema.methods.newEntry = function newEntry() {
 	console.log("New user " + this.username + " was added on " + this.date_created + ".");
 };
+
+// Hash password for security before entering into database
+userSchema.pre('save', function(next) {
+	const saltRounds = 10;
+	bcrypt.hash(this.password, saltRounds, (err, hash) => {
+		if (err) return err;
+		this.password = hash;
+		next();
+	});
+});
+
+const User = mongoose.model('User', userSchema);
+
+module.exports = User;

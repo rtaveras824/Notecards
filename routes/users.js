@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const UserSchema = require('../models/User');
+const User = require('../models/User');
 
 // Get user info by username
 // Post user info
@@ -7,16 +7,19 @@ const UserSchema = require('../models/User');
 // Delete user info
 
 router.get('/:id', (req, res) => {
-	res.json({
-		id: req.params.id, 
-		message: 'Get'
+	// Show user information except password
+	const findUser = User.findById(req.params.id, '-password', function(err, user) {
+		if (err) res.json(err);
+		res.json(user);
 	});
 });
 
-router.post('/', (req, res) => {
-	res.json({
-		message: 'Post'
-	});
+router.post('/', async (req, res) => {
+	// Password encryption is handled in 'pre' hook in user schema
+	const newUser = new User(req.body);
+	const newUserSave = await newUser.save();
+	newUserSave.newEntry();
+	res.json(newUserSave);
 });
 
 router.put('/:id', (req, res) => {
