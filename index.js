@@ -20,7 +20,7 @@ mongoose.connect(process.env.MONGO_URL)
 app.use('/api/users', userRoutes);
 
 app.get('/', (req, res) => {
-	res.send('Done');
+	res.send('This is the datebase.');
 })
 
 app.listen(port, () => {
