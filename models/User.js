@@ -30,6 +30,16 @@ const userSchema = new mongoose.Schema({
 		type: Date, 
 		default: Date.now
 	}
+}, {
+	toJSON: {
+		virtuals: true
+	}
+});
+
+userSchema.virtual('cards', {
+	ref: 'Card', 
+	localField: '_id', 
+	foreignField: 'author'
 });
 
 userSchema.methods.newEntry = function newEntry() {
@@ -37,6 +47,8 @@ userSchema.methods.newEntry = function newEntry() {
 };
 
 // Hash password for security before entering into database
+// For mongoose callbacks, always use callbacks functions as normal function "function() {}"
+// otherwise there will be issues with 'this'
 userSchema.pre('save', function(next) {
 	const saltRounds = 10;
 	bcrypt.hash(this.password, saltRounds, (err, hash) => {
