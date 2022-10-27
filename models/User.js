@@ -11,6 +11,8 @@ const userSchema = new mongoose.Schema({
 	email: {
 		type: String, 
 		required: [true, 'Must have an email.'],
+		lowercase: true,
+		trim: true,
 		validate: {
 			validator: function(v) {
 				return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(v);

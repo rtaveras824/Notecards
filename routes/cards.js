@@ -3,14 +3,14 @@ const User = require('../models/User');
 const Card = require('../models/Card');
 // const Language = require('../models/Language');
 
-router.get('/all/:id', (req, res) => {
+router.get('/all/:userId', (req, res) => {
 	// A virtual populate is used to attach cards with author
 	// See User.js
-	const findCards = User.findById(req.params.id, '-password')
+	const findCards = User.findById(req.params.userId, '-password')
 						.populate('cards')
 						.exec(function(err, userWithCards) {
 							if (err) return res.status(400).json(err)
-							return res.status(200).json(userWithCards.cards);
+							userWithCards ? (res.status(200).json(userWithCards.cards)) : (res.status(400).json({ error: 'User not found' }));
 						});
 });
 
@@ -40,7 +40,23 @@ router.post('/', (req, res) => {
 		} else {
 			return res.status(400).json({ error: 'User id not found.' });
 		}
+	});
+});
+
+router.put('/:id', (req, res) => {
+	const updatedData = req.body;
+	const options = { new: true }; // Return modified document instead of original
+	const updateCard = Card.findByIdAndUpdate(req.params.id, updatedData, options, function(err, card) {
+		if (err) return res.status(400).json(err);
+		card ? (res.status(200).json(card)) : (res.status(400).json({ error: 'Not updated because card not found.' }));
 	})
-})
+});
+
+router.delete('/:id', (req,res) => {
+	const deleteCard = Card.findByIdAndDelete(req.params.id, function(err, card) {
+		if (err) return res.status(400).json(err);
+		card ? (res.status(200).json(card)) : res.status(400).json({ error: 'Card not deleted because not found.' });
+	});
+});
 
 module.exports = router;
